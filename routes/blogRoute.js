@@ -19,8 +19,8 @@ router.post("/", protect, upload.single("image"), createBlog);
 router.patch("/:id", protect, upload.single("image"), updateBlog);
 router.delete("/:id", protect, deleteBlog);
 router.get("/", getBlogs);
-router.get("/:id", protect, getBlog);
-router.post('/:blogId', likeBlog);
-router.post('/:blogId', unLikeBlog);
+router.get("/:id", getBlog);
+router.post('/:id', likeBlog);
+router.post('/:id', unLikeBlog);
 
 module.exports = router;
