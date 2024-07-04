@@ -12,6 +12,8 @@ const blogSchema = mongoose.Schema(
       required: false,
       trim: true,
     },
+    likes: { type: Number, default: 0 },
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     sku: {
       type: String,
       required: false,
@@ -19,6 +21,11 @@ const blogSchema = mongoose.Schema(
       trim: true,
     },
     category: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    code: {
       type: String,
       required: false,
       trim: true,

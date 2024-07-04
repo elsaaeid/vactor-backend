@@ -3,9 +3,12 @@ const Blog = require("../models/blogModel");
 const { fileSizeFormatter } = require("../utils/fileUpload");
 const cloudinary = require("cloudinary").v2;
 
+
+
+
 // Create Blog
 const createBlog = asyncHandler(async (req, res) => {
-  const { name, sku, category, description } = req.body;
+  const { name, sku, category, description, code } = req.body;
 
   // Handle Image upload
   let fileData = {};
@@ -37,6 +40,7 @@ const createBlog = asyncHandler(async (req, res) => {
     sku,
     category,
     description,
+    code,
     image: fileData,
   });
 
@@ -46,7 +50,7 @@ const createBlog = asyncHandler(async (req, res) => {
 // Get all blogs
 const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find();
+    const blogs = await Blog.find().populate('likedBy');
     res.json(blogs);
   } catch (error) {
     console.error('Error retrieving blogs:', error);
@@ -85,7 +89,7 @@ const deleteBlog = asyncHandler(async (req, res) => {
 
 // Update blog
 const updateBlog = asyncHandler(async (req, res) => {
-  const { name, category, description } = req.body;
+  const { name, category, description, code } = req.body;
   const { id } = req.params;
 
   const blog = await Blog.findById(id);
@@ -131,6 +135,7 @@ const updateBlog = asyncHandler(async (req, res) => {
       name,
       category,
       description,
+      code,
       image: Object.keys(fileData).length === 0 ? blog?.image : fileData,
     },
     {
@@ -142,10 +147,65 @@ const updateBlog = asyncHandler(async (req, res) => {
   res.status(200).json(updatedBlog);
 });
 
+
+// Like Blog
+const likeBlog = asyncHandler(async (req, res) => {
+  const blogId = req.params.blogId;
+  const userId = req.user.id;
+  try {
+    const blog = await Blog.findById(blogId);
+    if (blog) {
+      if (!blog.likedBy.includes(userId)) {
+        blog.likes++;
+        blog.likedBy.push(userId);
+        await blog.save();
+        res.json({ message: 'Blog liked successfully' });
+      } else {
+        res.status(400).json({ message: 'You already liked this blog' });
+      }
+    } else {
+      res.status(404).json({ message: 'Blog not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// unLike blog
+const unLikeBlog =  asyncHandler(async (req, res) => {
+  const blogId = req.params.blogId;
+  const userId = req.user.id;
+  try {
+    const blog = await Blog.findById(blogId);
+    if (blog) {
+      if (blog.likedBy.includes(userId)) {
+        blog.likes--;
+        const index = blog.likedBy.indexOf(userId);
+        if (index !== -1) {
+          blog.likedBy.splice(index, 1);
+        }
+        await blog.save();
+        res.json({ message: 'Blog unliked successfully' });
+      } else {
+        res.status(400).json({ message: 'You did not like this blog' });
+      }
+    } else {
+      res.status(404).json({ message: 'Blog not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
 module.exports = {
   createBlog,
   getBlogs,
   getBlog,
   deleteBlog,
   updateBlog,
+  likeBlog,
+  unLikeBlog,
 };
