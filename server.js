@@ -16,7 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 8081;
 
 
-const allowedOrigins = ["http://localhost:3000", "https://vactor.vercel.app"];
+const allowedOrigins = ["http://localhost:3000", "https://debug-code.vercel.app"];
 
 // Middlewares
 app.use(cookieParser());

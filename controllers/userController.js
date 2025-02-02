@@ -747,6 +747,40 @@ const loginWithGoogle = asyncHandler(async (req, res) => {
   }
 });
 
+// Set a cookie
+ const setCookie = asyncHandler(async (req, res) => {
+  const { cookiesAccepted, username } = req.body;
+
+  if (cookiesAccepted === undefined || username === undefined) {
+      return res.status(400).json({ message: "Invalid request. Missing required fields." });
+  }
+
+  // Set cookies
+  res.cookie("cookiesAccepted", cookiesAccepted, { maxAge: 3600000, httpOnly: true }); // 1 hour
+  res.cookie("username", username || "Guest", { maxAge: 3600000, httpOnly: true }); // 1 hour
+
+  res.status(200).json({ message: "Cookies have been set!" });
+});
+
+// Get cookies
+ const getCookie = (req, res) => {
+  const cookiesAccepted = req.cookies.cookiesAccepted;
+  const username = req.cookies.username;
+
+  if (cookiesAccepted) {
+      res.status(200).json({ message: `Welcome back, ${username || "Guest"}!` });
+  } else {
+      res.status(404).json({ message: "No cookies found." });
+  }
+};
+// Remove cookies
+ const removeCookie = (req, res) => {
+  res.clearCookie("cookiesAccepted");
+  res.clearCookie("username");
+
+  res.status(200).json({ message: "Cookies have been removed!" });
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -766,4 +800,7 @@ module.exports = {
   sendLoginCode,
   loginWithCode,
   loginWithGoogle,
+  setCookie,
+  getCookie,
+  removeCookie,
 };

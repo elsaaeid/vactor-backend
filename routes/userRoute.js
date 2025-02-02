@@ -24,6 +24,9 @@ const {
   sendLoginCode,
   loginWithCode,
   loginWithGoogle,
+  setCookie,
+  getCookie,
+  removeCookie,
 } = require("../controllers/userController");
 
 router.post("/register", registerUser);
@@ -48,5 +51,9 @@ router.post("/sendLoginCode/:email", sendLoginCode);
 router.post("/loginWithCode/:email", loginWithCode);
 
 router.post("/google/callback", loginWithGoogle);
+router.post("/set-cookie", setCookie);
+router.get("/get-cookie", getCookie);
+router.post("/remove-cookie", removeCookie);
+
 
 module.exports = router;

@@ -22,7 +22,7 @@ const replySchema = new mongoose.Schema({
     },
     reply: {
         type: String,
-        required: true,
+        required: false,
         trim: true, // Remove whitespace from both ends
     },
     createdAt: {
@@ -52,7 +52,7 @@ const commentSchema = new mongoose.Schema({
     },
     comment: {
         type: String,
-        required: true,
+        required: false,
         trim: true // Trim whitespace from the comment
     },
     createdAt: {
@@ -123,6 +123,8 @@ const blogSchema = new mongoose.Schema({
         required: false,
         trim: true,
     },
+    tags: { type: [String] },
+    tags_ar: { type: [String] },
     image: {
         type: Object,
         default: {},

@@ -13,11 +13,13 @@ const createVideo = asyncHandler(async (req, res) => {
     category_ar,
     description,
     description_ar,
+    tags,
+    tags_ar,
     videoUrl,
   } = req.body;
 
   // Validation
-  if (!name || !category || !description || !videoUrl) {
+  if (!name || !category || !description || !videoUrl || !tags) {
     res.status(400);
     throw new Error("Please fill in all required fields");
   }
@@ -32,6 +34,8 @@ const createVideo = asyncHandler(async (req, res) => {
     category_ar,
     description,
     description_ar,
+    tags: JSON.parse(tags),
+    tags_ar: JSON.parse(tags_ar),
     videoUrl,
   });
 
@@ -126,6 +130,8 @@ const updateVideo = asyncHandler(async (req, res) => {
     category_ar, // Arabic category
     description, 
     description_ar,
+    tags, 
+    tags_ar, // Arabic tags
     videoUrl,
   } = req.body;
   
@@ -155,6 +161,8 @@ const updateVideo = asyncHandler(async (req, res) => {
       category_ar, // Include Arabic category
       description,
       description_ar, // Include Arabic 
+      tags: JSON.parse(tags),
+      tags_ar: JSON.parse(tags_ar),
       videoUrl,
     },
     {
